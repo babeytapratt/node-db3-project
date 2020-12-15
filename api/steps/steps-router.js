@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', middleware.validateStepsId, (req, res) => {
-    res.status(200).json({ req.step })
+    res.status(200).json({ step });
 });
 
 router.delete('/:id', middleware.validateStepsId, (req, res) => {
@@ -32,6 +32,26 @@ router.delete('/:id', middleware.validateStepsId, (req, res) => {
             res.status(500).json({ message: 'Error removing the step' })
         })
 });
+
+router.post('/:id/steps', (req, res) => {
+    const stepData = req.body;
+    const { id } = req.params;
+
+    Steps.findById(id)
+      .then(scheme => {
+        if (scheme) {
+          return Steps.addStep(stepData, id);
+        } else {
+          res.status(404).json({ message: 'Could not find scheme with given id.' })
+        }
+      })
+      .then(step => {
+        res.status(201).json(step);
+      })
+      .catch(err => {
+        res.status(500).json({ message: 'Failed to create new step' });
+      });
+  });
 
 router.put('/:id', middleware.validateStepsId, (req, res) => {
     const changes = req.body

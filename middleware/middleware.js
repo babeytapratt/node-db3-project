@@ -23,7 +23,7 @@ const validateStepsId = async (req, res, next) => {
       if (!step) {
         res.status(404).json({ message: `Step with id ${id} not found`});
       } else {
-        req.post = step;
+        req.step = step;
         next();
       }
     } catch (error) {
